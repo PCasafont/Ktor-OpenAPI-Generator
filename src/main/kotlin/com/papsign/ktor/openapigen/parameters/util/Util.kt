@@ -18,7 +18,8 @@ fun <T : Any> buildParameterHandler(tType: KType): ParameterHandler<T> {
     @Suppress("UNCHECKED_CAST")
     if (tType.classifier == Unit::class) return UnitParameterHandler as ParameterHandler<T>
     val tClass = tType.jvmErasure
-    assert(tClass.isData) { "API route with ${tClass.simpleName} must be a data class." }
+    // Assertions in production code lead to inconsistent behavior :(
+    //assert(tClass.isData) { "API route with ${tClass.simpleName} must be a data class." }
     val constructor = tClass.primaryConstructor ?: error("API routes with ${tClass.simpleName} must have a primary constructor.")
     val parsers: Map<KParameter, Builder<*>> = constructor.parameters.associateWith { param ->
         val type = param.type
